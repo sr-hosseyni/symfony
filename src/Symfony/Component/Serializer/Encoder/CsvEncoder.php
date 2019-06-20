@@ -67,6 +67,23 @@ class CsvEncoder implements EncoderInterface, DecoderInterface
      */
     public function encode($data, $format, array $context = [])
     {
+        $handle = $this->encodeOnStream($data, $context);
+        $value = stream_get_contents($handle);
+        fclose($handle);
+        return $value;
+    }
+
+    /**
+     * Encodes data into the temporary file
+     *
+     * @param mixed  $data    Data to encode
+     * @param array  $context Options that normalizers/encoders have access to
+     *
+     * @return resource
+     *
+     */
+    public function encodeOnStream($data, array $context = [])
+    {
         $handle = fopen('php://temp,', 'w+');
 
         if (!\is_array($data)) {
